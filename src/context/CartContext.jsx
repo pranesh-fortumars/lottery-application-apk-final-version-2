@@ -436,7 +436,6 @@ export const CartProvider = ({ children }) => {
           userId: user.uid,
           userName: user.name || 'Unknown',
           userMobile: user.mobile || 'No Mobile',
-          userUpiId: userUpiId,
           type: 'purchase',
           paymentType: paymentType,
           amount: totalCost,

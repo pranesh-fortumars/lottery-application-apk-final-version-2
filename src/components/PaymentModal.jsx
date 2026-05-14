@@ -9,7 +9,6 @@ const PaymentModal = ({ isOpen, onClose, amount, onConfirm }) => {
   const [showInput, setShowInput] = React.useState(false);
   const [hasStarted, setHasStarted] = React.useState(false);
   const [transactionId, setTransactionId] = React.useState('');
-  const [userUpiId, setUserUpiId] = React.useState('');
   const [paidAmount, setPaidAmount] = React.useState('');
 
   const handleCopy = () => {
@@ -100,16 +99,6 @@ const PaymentModal = ({ isOpen, onClose, amount, onConfirm }) => {
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Your Paying UPI ID</label>
-                    <input 
-                      type="text" 
-                      value={userUpiId}
-                      onChange={(e) => setUserUpiId(e.target.value)}
-                      placeholder="e.g. yourname@okaxis"
-                      className="w-full mt-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-4 text-sm font-bold focus:outline-none focus:border-[#ff0033] focus:ring-4 focus:ring-[#ff0033]/5 transition-all"
-                    />
-                  </div>
-                  <div>
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Transaction ID / UTR (12 Digits)</label>
                     <input 
                       type="text" 
@@ -131,11 +120,9 @@ const PaymentModal = ({ isOpen, onClose, amount, onConfirm }) => {
                <button 
                   onClick={() => {
                     if (!paidAmount || parseFloat(paidAmount) <= 0) return alert("Please enter the amount you paid");
-                    if (!userUpiId.trim()) return alert("Please enter your UPI ID");
                     if (!transactionId.trim()) return alert("Please enter Transaction ID");
-                    onConfirm(transactionId, userUpiId, paidAmount);
+                    onConfirm(transactionId, null, paidAmount);
                     setTransactionId('');
-                    setUserUpiId('');
                     setPaidAmount('');
                   }}
                   className="w-full bg-[#ff0033] text-white py-5 rounded-[1.5rem] font-black text-xs uppercase tracking-widest shadow-xl shadow-red-500/20 active:scale-95 transition-all flex items-center justify-center gap-2"
