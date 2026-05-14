@@ -417,7 +417,7 @@ const DatabaseCleanseSettings = () => {
 
 const AdminSettings = () => {
   const [activeTab, setActiveTab] = useState('General');
-  const { accounts, activePayment, paymentConfig, setPaymentMode, setManualAccount } = usePayment();
+  const { activePayment } = usePayment();
   const { appSettings, updateAppSettings } = useCart();
   const [savingJackpot, setSavingJackpot] = useState(false);
 
@@ -434,7 +434,6 @@ const AdminSettings = () => {
   const tabs = [
     { id: 'General', icon: Box, label: 'General Info' },
     { id: 'Profile', icon: User, label: 'My Identity' },
-    { id: 'Financial', icon: CreditCard, label: 'Payment Gateway' },
     { id: 'Security', icon: Key, label: 'Security & Access' },
     { id: 'Cleanse', icon: Trash2, label: 'Factory Reset' },
     { id: 'Integration', icon: Globe, label: 'API & External' },
@@ -578,73 +577,7 @@ const AdminSettings = () => {
             <DatabaseCleanseSettings />
           )}
 
-         {activeTab === 'Financial' && (
-           <div className="space-y-6">
-             <div className="bg-amber-50 p-6 rounded-3xl border border-amber-100 mb-8">
-               <div className="flex justify-between items-center mb-2">
-                 <div className="flex gap-3 items-center">
-                   <AlertCircle className="text-amber-500" size={20} />
-                   <h4 className="text-[10px] font-black uppercase tracking-widest text-amber-900">Rotation Control</h4>
-                 </div>
-                 <div className="flex items-center gap-2">
-                    <span className="text-[8px] font-black uppercase text-amber-700">{paymentConfig.mode === 'auto' ? 'AUTOMATIC' : 'MANUAL OVERRIDE'}</span>
-                    <button 
-                      onClick={() => setPaymentMode(paymentConfig.mode === 'auto' ? 'manual' : 'auto')}
-                      className={`w-12 h-6 rounded-full relative transition-all ${paymentConfig.mode === 'auto' ? 'bg-emerald-500' : 'bg-orange-500'}`}
-                    >
-                       <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${paymentConfig.mode === 'auto' ? 'left-1' : 'left-7'}`}></div>
-                    </button>
-                 </div>
-               </div>
-               <p className="text-[10px] text-amber-800 font-bold leading-relaxed">
-                 {paymentConfig.mode === 'auto' 
-                   ? 'The system rotates QR codes every 2 days automatically based on the global reference date.' 
-                   : 'Automatic rotation is PAUSED. You must manually select the active account below.'}
-               </p>
-             </div>
-
-             <div className="grid grid-cols-1 gap-4">
-                {accounts.map((acc) => {
-                  const isActive = activePayment?.id === acc.id;
-                  
-                  return (
-                   <div 
-                     key={acc.id} 
-                     onClick={() => paymentConfig.mode === 'manual' && setManualAccount(acc.id)}
-                     className={`p-6 rounded-[2rem] border-2 transition-all cursor-pointer ${
-                       isActive 
-                         ? 'bg-white border-[#ff004d] shadow-lg scale-105' 
-                         : 'bg-gray-50 border-gray-100 opacity-60 hover:opacity-100'
-                     }`}
-                   >
-                     <div className="flex justify-between items-start mb-4">
-                       <div>
-                         <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest">Account {acc.id}</p>
-                         <h5 className="text-sm font-black text-gray-800 uppercase italic">{acc.bankName}</h5>
-                       </div>
-                       {isActive && (
-                         <span className={`text-white text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg -rotate-3 ${
-                           paymentConfig.mode === 'auto' ? 'bg-emerald-500' : 'bg-[#ff004d]'
-                         }`}>
-                           {paymentConfig.mode === 'auto' ? 'Auto-Active' : 'Manually Fixed'}
-                         </span>
-                       )}
-                     </div>
-                     <div className="flex items-center gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
-                        <img src={acc.qrUrl} alt="QR" className="w-16 h-16 rounded-lg shadow-sm" />
-                        <div className="flex-grow">
-                           <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">UPI ID</p>
-                           <p className="text-xs font-black text-gray-800 truncate">{acc.upiId}</p>
-                        </div>
-                     </div>
-                   </div>
-                 );
-               })}
-             </div>
-           </div>
-         )}
-
-         {activeTab !== 'Financial' && (
+         {activeTab !== 'Cleanse' && activeTab !== 'Profile' && (
           <div className="pt-10 grid grid-cols-2 gap-4">
             <button className="py-5 bg-gray-900 text-white rounded-2xl font-black text-[12px] uppercase tracking-widest shadow-xl shadow-black/10 active:scale-95 transition-all">
                Store Global Config
