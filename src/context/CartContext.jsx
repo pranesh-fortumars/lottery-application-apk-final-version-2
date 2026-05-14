@@ -469,7 +469,7 @@ export const CartProvider = ({ children }) => {
             purchaseDate: purchaseDate,
             purchaseTime: purchaseTime,
             status: 'Active',
-            paidVia: 'Wallet',
+            paidVia: paymentType,
             prize: '-',
             timestamp: serverTimestamp()
           });

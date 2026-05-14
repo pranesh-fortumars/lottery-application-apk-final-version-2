@@ -30,20 +30,31 @@ const CartPage = () => {
   const handlePay = async () => {
     if (cart.length === 0 || anyClosed) return;
     
-    if (isFullBonus) {
-      if (window.confirm(`Use ₹${bonusUsed} from your Referral Bonus to purchase these tickets? This will be submitted for admin approval.`)) {
+    const walletBalance = (user?.depositedBalance || 0) + (user?.winningBalance || 0);
+    const totalUsableBalance = walletBalance + bonusAvailable;
+
+    if (totalUsableBalance >= cartTotal) {
+      // User has enough in wallet (including bonus) to pay directly
+      const paymentType = isFullBonus ? 'Referral Bonus' : 'Wallet';
+      const confirmMsg = isFullBonus 
+        ? `Use ₹${bonusUsed} from your Referral Bonus to purchase these tickets?`
+        : `Pay ₹${cartTotal.toFixed(2)} from your wallet balance to purchase these tickets?`;
+
+      if (window.confirm(confirmMsg)) {
         setIsProcessing(true);
         try {
-          await confirmPurchase(true, null, null, 'Referral Bonus', bonusUsed);
-          alert("Request Submitted! Your tickets will be confirmed after admin verification.");
+          // isPrepaid = false means direct deduction from wallet
+          await confirmPurchase(false, null, null, paymentType, bonusUsed);
+          alert("Purchase Successful!");
           navigate('/home');
         } catch (error) {
-          alert("Failed to submit request.");
+          alert("Failed to complete purchase.");
         } finally {
           setIsProcessing(false);
         }
       }
     } else {
+      // Insufficient wallet balance, show manual payment modal
       setShowPayment(true);
     }
   };
