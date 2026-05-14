@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import PageWrapper, { SupportSection } from '../components/PageWrapper';
 import { CreditCard, Wallet, ChevronRight, CheckCircle2, QrCode, Landmark, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -10,11 +10,18 @@ import { db } from '../firebase';
 
 const TopUpPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { activePayment } = usePayment();
   const [amount, setAmount] = useState('100.00');
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.requiredAmount) {
+      setAmount(location.state.requiredAmount);
+    }
+  }, [location.state]);
 
   const amounts = ['100.00', '200.00', '500.00', '1000.00', '2000.00', '5000.00'];
 
