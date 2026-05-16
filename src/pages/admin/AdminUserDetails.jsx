@@ -19,7 +19,8 @@ import {
   Info,
   ChevronLeft,
   X,
-  Key
+  Key,
+  Landmark
 } from 'lucide-react';
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../../firebase';
