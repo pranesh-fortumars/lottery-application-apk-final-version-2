@@ -136,12 +136,28 @@ const AdminWithdrawals = () => {
                  </div>
               </div>
 
-              <div className="bg-gray-950 p-4 rounded-2xl flex flex-col relative overflow-hidden">
+              <div className="bg-gray-950 p-5 rounded-2xl flex flex-col relative overflow-hidden space-y-3 shadow-xl">
                  <div className="absolute top-0 right-0 p-4 opacity-10 text-white">
                     <ArrowUpRight size={32} />
                  </div>
-                 <p className="text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-1">Target UPI ID</p>
-                 <p className="text-sm font-black text-white tracking-tight italic select-all">{req.upiId}</p>
+                 <div>
+                   <p className="text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-0.5">Account Holder Name</p>
+                   <p className="text-xs font-black text-white tracking-tight italic select-all">{req.accountHolderName || req.userName}</p>
+                 </div>
+                 <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10">
+                   <div>
+                     <p className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">Account Number</p>
+                     <p className="text-xs font-black text-white tracking-tight italic select-all">{req.accountNumber || 'N/A'}</p>
+                   </div>
+                   <div>
+                     <p className="text-[8px] font-black text-gray-400 uppercase tracking-[0.2em] mb-0.5">IFSC Code</p>
+                     <p className="text-xs font-black text-white tracking-tight italic select-all">{req.ifscCode || 'N/A'}</p>
+                   </div>
+                 </div>
+                 <div className="pt-2 border-t border-white/10">
+                   <p className="text-[8px] font-black text-emerald-400 uppercase tracking-[0.2em] mb-0.5">Target UPI ID</p>
+                   <p className="text-xs font-black text-white tracking-tight italic select-all">{req.upiId}</p>
+                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">

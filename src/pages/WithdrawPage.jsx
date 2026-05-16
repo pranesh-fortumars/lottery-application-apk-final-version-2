@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageWrapper, { SupportSection } from '../components/PageWrapper';
-import { Wallet, ShieldCheck, ArrowUpRight, CheckCircle2, XCircle, AlertTriangle, Zap } from 'lucide-react';
+import { Wallet, ShieldCheck, ArrowUpRight, CheckCircle2, XCircle, AlertTriangle, Zap, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -14,11 +14,24 @@ const WithdrawPage = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [status, setStatus] = useState('idle'); // idle, success, error
 
+  useEffect(() => {
+    if (user?.upiId) {
+      setUpiId(user.upiId);
+    }
+  }, [user]);
+
   const winnings = user?.winningBalance || 0;
+  const isProfileComplete = Boolean(user?.accountHolderName && user?.accountNumber && user?.ifscCode && user?.upiId);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const withdrawAmt = parseFloat(amount);
+
+    if (!isProfileComplete) {
+      alert("MANDATORY VERIFICATION REQUIRED: Please complete your banking and UPI payout details in your profile before requesting a withdrawal.");
+      navigate('/settings/personal-info');
+      return;
+    }
 
     if (isNaN(withdrawAmt) || withdrawAmt <= 0) {
       alert("Please enter a valid amount.");
@@ -41,6 +54,9 @@ const WithdrawPage = () => {
         userId: user.uid,
         userName: user.name || 'Unknown',
         userMobile: user.mobile || 'No Mobile',
+        accountHolderName: user.accountHolderName || user.name || 'Unknown',
+        accountNumber: user.accountNumber || 'N/A',
+        ifscCode: user.ifscCode || 'N/A',
         amount: withdrawAmt,
         upiId: upiId.trim(),
         status: 'pending',
@@ -82,7 +98,7 @@ const WithdrawPage = () => {
     <PageWrapper title="WITHDRAW FUNDS" showBack={true}>
       <div className="bg-white min-h-screen p-6 flex flex-col items-center">
         {/* Balance Card */}
-        <div className="w-full max-w-sm bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden mb-10 group">
+        <div className="w-full max-w-sm bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden mb-8 group">
            <div className="absolute top-0 right-0 p-6 opacity-10 bg-white rounded-bl-[2.5rem] group-hover:scale-110 transition-transform">
               <Zap size={48} />
            </div>
@@ -96,6 +112,25 @@ const WithdrawPage = () => {
               </div>
            </div>
         </div>
+
+        {/* Profile Completion Warning */}
+        {!isProfileComplete && (
+          <div className="w-full max-w-sm bg-amber-50 border border-amber-200 p-5 rounded-2xl mb-6 flex flex-col items-center text-center gap-3 shadow-md animate-pulse">
+            <AlertCircle className="text-amber-600" size={28} />
+            <p className="text-xs font-black text-amber-900 uppercase tracking-tight italic">
+              Verification Required
+            </p>
+            <p className="text-[10px] font-bold text-amber-800 leading-relaxed">
+              You must complete your mandatory banking & UPI payout details before requesting a withdrawal.
+            </p>
+            <button 
+              onClick={() => navigate('/settings/personal-info')}
+              className="w-full bg-amber-500 text-white py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-md active:scale-95 transition-all mt-1"
+            >
+              Complete Verification Now
+            </button>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-6">
@@ -141,7 +176,7 @@ const WithdrawPage = () => {
 
            <button 
              type="submit"
-             disabled={isProcessing || winnings <= 0}
+             disabled={isProcessing || winnings <= 0 || !isProfileComplete}
              className="w-full h-16 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-500/20 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:grayscale"
            >
              {isProcessing ? 'PROCESSING...' : 'Authorize Withdrawal'} <ArrowUpRight size={18} />

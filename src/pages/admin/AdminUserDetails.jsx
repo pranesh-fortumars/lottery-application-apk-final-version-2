@@ -49,7 +49,11 @@ const AdminUserDetails = () => {
           setEditData({
             name: userData.name || '',
             mobile: userData.mobile || '',
-            email: userData.email || ''
+            email: userData.email || '',
+            accountHolderName: userData.accountHolderName || '',
+            accountNumber: userData.accountNumber || '',
+            ifscCode: userData.ifscCode || '',
+            upiId: userData.upiId || ''
           });
 
           // Fetch user tickets for stats and activity - Removed orderBy to avoid index errors
@@ -300,6 +304,35 @@ const AdminUserDetails = () => {
             </div>
          </div>
 
+         {/* Banking & Payout Credentials */}
+         <div className="bg-gray-50/30 rounded-[2rem] p-6 border border-gray-100 space-y-6">
+            <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
+               <Landmark className="text-[#f42464]" size={20} />
+               <h4 className="text-sm font-black uppercase tracking-tight text-gray-800 italic font-condensed">Banking & Payout Credentials</h4>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+               <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Account Holder Name</p>
+                  <p className="text-xs font-black text-gray-800 truncate">{user.accountHolderName || <span className="text-red-500 italic">Not Provided</span>}</p>
+               </div>
+               <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Account Number</p>
+                  <p className="text-xs font-black text-gray-800 truncate">{user.accountNumber || <span className="text-red-500 italic">Not Provided</span>}</p>
+               </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+               <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">IFSC Code</p>
+                  <p className="text-xs font-black text-gray-800 truncate">{user.ifscCode || <span className="text-red-500 italic">Not Provided</span>}</p>
+               </div>
+               <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                  <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">UPI ID / Address</p>
+                  <p className="text-xs font-black text-gray-800 truncate">{user.upiId || <span className="text-red-500 italic">Not Provided</span>}</p>
+               </div>
+            </div>
+         </div>
+
          <div className="space-y-6 pt-4 border-t border-gray-50">
             <h3 className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1 mb-4">Vault Activity history</h3>
             <div className="space-y-4">
@@ -406,6 +439,10 @@ const AdminUserDetails = () => {
                   { label: 'Full Name', key: 'name', icon: User, type: 'text' },
                   { label: 'Mobile Number', key: 'mobile', icon: Phone, type: 'tel' },
                   { label: 'Email Address', key: 'email', icon: Mail, type: 'email' },
+                  { label: 'Account Holder Name', key: 'accountHolderName', icon: User, type: 'text' },
+                  { label: 'Account Number', key: 'accountNumber', icon: Info, type: 'text' },
+                  { label: 'IFSC Code', key: 'ifscCode', icon: Key, type: 'text' },
+                  { label: 'UPI ID', key: 'upiId', icon: Mail, type: 'text' },
                 ].map((field) => (
                   <div key={field.key} className="space-y-1.5">
                     <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">{field.label}</label>

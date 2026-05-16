@@ -154,6 +154,76 @@ const ProfilePage = () => {
             </div>
           )}
 
+          {/* Mandatory Profile Completion Warning Banner */}
+          {!isAdmin && !Boolean(user?.accountHolderName && user?.accountNumber && user?.ifscCode && user?.upiId) && (
+            <div className="mx-6 mt-6 bg-amber-50 border-2 border-amber-200 rounded-[2.5rem] p-6 shadow-lg flex flex-col gap-4 animate-pulse">
+               <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-amber-500 text-white rounded-2xl flex items-center justify-center shrink-0 shadow-md">
+                     <AlertCircle size={24} />
+                  </div>
+                  <div>
+                     <h3 className="text-sm font-black text-amber-900 uppercase tracking-tight italic font-condensed">Action Required: Mandatory Profile Completion</h3>
+                     <p className="text-[10px] text-amber-800 font-bold mt-0.5 leading-relaxed">
+                        You must verify your banking & UPI payout credentials before purchasing tickets or requesting withdrawals.
+                     </p>
+                  </div>
+               </div>
+               <button 
+                 onClick={() => navigate('/settings/personal-info')}
+                 className="w-full bg-amber-500 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2"
+               >
+                  Complete Verification Details <ChevronRight size={16} />
+               </button>
+            </div>
+          )}
+
+          {/* Payout & Banking Info Card */}
+          {!isAdmin && (
+            <div className="p-6">
+               <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-xl relative overflow-hidden group">
+                  <div className="flex items-center justify-between mb-6 border-b border-gray-50 pb-4">
+                     <div className="flex items-center gap-3">
+                        <CreditCard className="text-[#ff0033]" size={24} />
+                        <h3 className="text-lg font-black font-condensed uppercase tracking-tighter italic text-gray-900">Payout & Banking Info</h3>
+                     </div>
+                     <button 
+                       onClick={() => navigate('/settings/personal-info')}
+                       className="text-[10px] font-black text-[#ff0033] uppercase tracking-widest hover:underline flex items-center gap-1"
+                     >
+                        Edit <Edit2 size={12} />
+                     </button>
+                  </div>
+
+                  <div className="space-y-4">
+                     <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                           <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Account Holder</p>
+                           <p className="text-xs font-black text-gray-800 truncate">{user?.accountHolderName || <span className="text-red-500 italic">Required</span>}</p>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                           <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Account Number</p>
+                           <p className="text-xs font-black text-gray-800 truncate">{user?.accountNumber || <span className="text-red-500 italic">Required</span>}</p>
+                        </div>
+                     </div>
+                     <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                           <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">IFSC Code</p>
+                           <p className="text-xs font-black text-gray-800 truncate">{user?.ifscCode || <span className="text-red-500 italic">Required</span>}</p>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                           <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">UPI Address / ID</p>
+                           <p className="text-xs font-black text-gray-800 truncate">{user?.upiId || <span className="text-red-500 italic">Required</span>}</p>
+                        </div>
+                     </div>
+                     <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                        <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Registered Phone Number</p>
+                        <p className="text-xs font-black text-gray-800">{user?.mobile || 'N/A'}</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+          )}
+
           {/* Referral Section - Hidden for Admins */}
           {!isAdmin && (
             <div className="p-6">
