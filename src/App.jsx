@@ -21,6 +21,7 @@ import ProfilePage from './pages/ProfilePage';
 import MyTickets from './pages/MyTickets';
 import TopUpPage from './pages/TopUpPage';
 import WithdrawPage from './pages/WithdrawPage';
+import UserTransactions from './pages/UserTransactions';
 
 import PageWrapper from './components/PageWrapper';
 import AdminLayout from './components/AdminLayout';
@@ -111,6 +112,7 @@ const AnimatedRoutes = () => {
           <Route path="/tickets" element={<ProtectedRoute role="user"><MyTickets /></ProtectedRoute>} />
           <Route path="/topup" element={<ProtectedRoute role="user"><TopUpPage /></ProtectedRoute>} />
           <Route path="/withdraw" element={<ProtectedRoute role="user"><WithdrawPage /></ProtectedRoute>} />
+          <Route path="/transactions" element={<ProtectedRoute role="user"><UserTransactions /></ProtectedRoute>} />
           
           {/* Admin Routes */}
           <Route path="/admin" element={<ProtectedRoute role="admin"><AdminLayout><AdminDashboard /></AdminLayout></ProtectedRoute>} />
