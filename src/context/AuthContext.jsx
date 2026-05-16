@@ -5,7 +5,7 @@ import {
   signOut, 
   onAuthStateChanged 
 } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import { COMMON_REFERRAL_CODE } from '../constants/referralConfig';
 
@@ -73,16 +73,46 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password, additionalData) => {
     try {
+      const usersRef = collection(db, 'users');
+      
+      // 1. Uniqueness Validation: Check if mobile is already registered
+      if (additionalData.mobile) {
+        const mobileQ = query(usersRef, where('mobile', '==', additionalData.mobile.trim()));
+        const mobileSnap = await getDocs(mobileQ);
+        if (!mobileSnap.empty) {
+          return { success: false, message: "Mobile number is already registered. Please log in." };
+        }
+      }
+
+      // 2. Uniqueness Validation: Check if username is already registered
+      if (additionalData.name) {
+        const nameQ = query(usersRef, where('name', '==', additionalData.name.trim()));
+        const nameSnap = await getDocs(nameQ);
+        if (!nameSnap.empty) {
+          return { success: false, message: "Username is already taken. Please choose another username." };
+        }
+      }
+
+      // 3. Uniqueness Validation: Check if email is already registered in Firestore
+      if (additionalData.email) {
+        const emailQ = query(usersRef, where('email', '==', additionalData.email.trim().toLowerCase()));
+        const emailSnap = await getDocs(emailQ);
+        if (!emailSnap.empty) {
+          return { success: false, message: "Email address is already registered. Please log in." };
+        }
+      }
+
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
       
       const isReferralValid = additionalData.referral?.toUpperCase() === COMMON_REFERRAL_CODE;
       const bonus = isReferralValid ? 50 : 0;
 
-      // Save additional user data to Firestore
+      // Save additional user data to Firestore including email for flexible login
       const userData = {
         name: additionalData.name || '',
         mobile: additionalData.mobile || '',
+        email: additionalData.email?.toLowerCase() || email.toLowerCase(),
         referral: additionalData.referral || '',
         referralApplied: isReferralValid,
         role: 'user',
@@ -103,24 +133,75 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
+  const login = async (identifier, password) => {
+    let loginEmail = null;
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const idTrimmed = identifier.trim();
+      const idLower = idTrimmed.toLowerCase();
+
+      // 1. Check legacy mock shortcuts first to maintain existing default account behaviors
+      if (idLower === 'admin') {
+        loginEmail = 'smswinsms@gmail.com';
+      } else if (idLower === 'user') {
+        loginEmail = 'user@lottery.com';
+      }
+
+      // 2. Dynamic validation against the registered user database (Firestore 'users' collection)
+      if (!loginEmail) {
+        const usersRef = collection(db, 'users');
+        
+        // Query across mobile, name (username), and email
+        const mobileQuery = query(usersRef, where('mobile', '==', idTrimmed));
+        const nameQuery = query(usersRef, where('name', '==', idTrimmed));
+        const emailQuery = query(usersRef, where('email', '==', idLower));
+
+        const [mobileSnap, nameSnap, emailSnap] = await Promise.all([
+          getDocs(mobileQuery),
+          getDocs(nameQuery),
+          getDocs(emailQuery)
+        ]);
+
+        let matchedUserDoc = null;
+        if (!mobileSnap.empty) matchedUserDoc = mobileSnap.docs[0];
+        else if (!nameSnap.empty) matchedUserDoc = nameSnap.docs[0];
+        else if (!emailSnap.empty) matchedUserDoc = emailSnap.docs[0];
+
+        if (matchedUserDoc) {
+          const userData = matchedUserDoc.data();
+          if (userData.status === 'Blocked') {
+            return { success: false, message: "Your account has been blocked by the administrator." };
+          }
+          loginEmail = userData.email || `${userData.mobile}@lottery.com`;
+        } else {
+          // Fallback check if identifier is a direct email or 10-digit mobile pattern not yet in Firestore metadata
+          if (idTrimmed.includes('@')) {
+            loginEmail = idTrimmed;
+          } else if (/^\d{10}$/.test(idTrimmed)) {
+            loginEmail = `${idTrimmed}@lottery.com`;
+          } else {
+            return { success: false, message: "Account not found. Please check your Username, Mobile number, or Email." };
+          }
+        }
+      }
+
+      // 3. Perform Firebase Authentication
+      await signInWithEmailAndPassword(auth, loginEmail, password);
       return { success: true };
     } catch (error) {
       // Special Auto-Provisioning for Default Mock Accounts
-      const isDefaultAdmin = email === 'smswinsms@gmail.com' && password === 'admin123';
-      const isDefaultUser = email === 'user@lottery.com' && password === 'user123';
+      const isDefaultAdmin = loginEmail === 'smswinsms@gmail.com' && password === 'admin123';
+      const isDefaultUser = loginEmail === 'user@lottery.com' && password === 'user123';
 
       if (isDefaultAdmin || isDefaultUser) {
         if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password') {
           console.log(`Auto-provisioning default ${isDefaultAdmin ? 'admin' : 'user'} account...`);
           try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, loginEmail, password);
             const firebaseUser = userCredential.user;
             await setDoc(doc(db, 'users', firebaseUser.uid), {
               name: isDefaultAdmin ? 'Super Admin' : 'Test User',
               mobile: isDefaultAdmin ? '0000000000' : '9999999999',
+              email: loginEmail,
               role: isDefaultAdmin ? 'admin' : 'user',
               balance: isDefaultAdmin ? 999999 : 0,
               status: 'Active',
@@ -128,7 +209,6 @@ export const AuthProvider = ({ children }) => {
             });
             return { success: true };
           } catch (signupError) {
-            // If creation fails because user already exists but password was wrong, fall through to wrong password error
             if (signupError.code !== 'auth/email-already-in-use') {
               console.error("Default account setup failed:", signupError);
               return { success: false, message: "Setup failed. Please try again or use Signup." };
@@ -140,7 +220,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Login error:", error);
 
       // Check for Mobile Reset Sync
-      const mobileMatch = email.match(/^(\d{10})@/);
+      const mobileMatch = loginEmail?.match(/^(\d{10})@/);
       if (mobileMatch) {
         const mobile = mobileMatch[1];
         const q = query(collection(db, 'users'), where('mobile', '==', mobile));
@@ -148,7 +228,6 @@ export const AuthProvider = ({ children }) => {
         
         if (!snap.empty) {
           const userData = snap.docs[0].data();
-          // If a temp password exists from an OTP reset, and it matches what was entered
           if (userData.passwordUpdateRequested && userData.tempPassword === password) {
              return { 
                success: false, 
@@ -158,12 +237,14 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      let message = "Invalid ID or Password. Please try again.";
+      let message = "Incorrect password or invalid credentials. Please try again.";
+      if (error.code === 'auth/too-many-requests') message = "Too many failed login attempts. Please try again later.";
       if (error.code === 'auth/network-request-failed') message = "Network error. Check your connection.";
       
       return { success: false, message: message };
     }
   };
+
 
   const logout = async () => {
     try {

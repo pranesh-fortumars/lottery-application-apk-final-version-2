@@ -17,21 +17,7 @@ const LoginPage = () => {
     setError('');
     setLoading(true);
 
-    let loginEmail = identifier;
-    
-    // Exact mapping for mock default accounts to match legacy behavior
-    const idLower = identifier.toLowerCase();
-    if (idLower === 'admin') {
-      loginEmail = 'smswinsms@gmail.com';
-    } else if (idLower === 'user') {
-      loginEmail = 'user@lottery.com';
-    } else if (/^\d{10}$/.test(identifier)) {
-      loginEmail = `${identifier}@lottery.com`;
-    } else if (!identifier.includes('@')) {
-      loginEmail = `${identifier}@lottery.com`;
-    }
-
-    const result = await login(loginEmail, password);
+    const result = await login(identifier, password);
     setLoading(false);
 
     if (result.success) {
@@ -59,7 +45,7 @@ const LoginPage = () => {
             </div>
             <input 
               className="flex-grow px-4 outline-none border-none focus:ring-0 text-sm font-bold text-gray-700 bg-transparent placeholder:text-gray-300" 
-              placeholder="Enter ID or Mobile Number" 
+              placeholder="Username, Mobile Number, or Email" 
               type="text"
               required
               value={identifier}
