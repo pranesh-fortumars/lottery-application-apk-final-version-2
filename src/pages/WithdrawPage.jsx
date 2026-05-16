@@ -141,7 +141,9 @@ const WithdrawPage = () => {
                    <div className="absolute left-6 top-1/2 -translate-y-1/2 text-emerald-500 font-black text-xl italic">₹</div>
                    <input 
                      required
-                     type="number" 
+                     type="text" 
+                     inputMode="decimal"
+                     pattern="[0-9]*"
                      value={amount}
                      onChange={(e) => setAmount(e.target.value)}
                      className="w-full h-16 bg-gray-50 border border-gray-100 rounded-2xl pl-14 pr-6 font-black text-gray-900 text-lg outline-none focus:bg-white focus:border-emerald-500/30 transition-all shadow-inner"

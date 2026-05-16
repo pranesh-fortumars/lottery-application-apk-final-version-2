@@ -369,7 +369,7 @@ const ProfilePage = () => {
               <form onSubmit={handleUpdateProfile} className="space-y-5">
                 {[
                   { label: 'Display Name', key: 'name', icon: User, type: 'text' },
-                  { label: 'Direct Mobile', key: 'mobile', icon: Phone, type: 'tel' },
+                  { label: 'Direct Mobile', key: 'mobile', icon: Phone, type: 'tel', inputMode: 'numeric', pattern: '[0-9]*' },
                 ].map((field) => (
                   <div key={field.key} className="space-y-1.5">
                     <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">{field.label}</label>
@@ -378,6 +378,8 @@ const ProfilePage = () => {
                       <input 
                         required
                         type={field.type} 
+                        inputMode={field.inputMode}
+                        pattern={field.pattern}
                         value={editData[field.key]}
                         onChange={e => setEditData({...editData, [field.key]: e.target.value})}
                         className="w-full h-15 bg-gray-50/50 border border-gray-100 rounded-2xl pl-16 pr-6 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#ff0033]/20 transition-all text-xs"

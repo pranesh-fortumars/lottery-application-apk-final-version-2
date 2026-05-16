@@ -195,9 +195,9 @@ const AdminUsers = () => {
               <form onSubmit={handleAddUser} className="space-y-5">
                 {[
                   { label: 'Full Name', key: 'name', icon: User, type: 'text', placeholder: 'Legal name of player' },
-                  { label: 'Mobile Number', key: 'mobile', icon: Phone, type: 'tel', placeholder: '+91 00000 00000' },
+                  { label: 'Mobile Number', key: 'mobile', icon: Phone, type: 'tel', placeholder: '+91 00000 00000', inputMode: 'numeric', pattern: '[0-9]*' },
                   { label: 'Email (Optional)', key: 'email', icon: Mail, type: 'email', placeholder: 'contact@player.com' },
-                  { label: 'Starting Balance', key: 'balance', icon: Wallet, type: 'number', placeholder: '₹ 0.00' },
+                  { label: 'Starting Balance', key: 'balance', icon: Wallet, type: 'text', placeholder: '₹ 0.00', inputMode: 'decimal', pattern: '[0-9]*' },
                 ].map((field) => (
                   <div key={field.key} className="space-y-1.5">
                     <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest ml-1">{field.label}</label>
@@ -206,6 +206,8 @@ const AdminUsers = () => {
                       <input 
                         required={field.key !== 'email'}
                         type={field.type} 
+                        inputMode={field.inputMode}
+                        pattern={field.pattern}
                         placeholder={field.placeholder} 
                         value={newUser[field.key]}
                         onChange={e => setNewUser({...newUser, [field.key]: e.target.value})}

@@ -101,6 +101,8 @@ const SignupPage = () => {
               className="flex-grow px-4 outline-none border-none focus:ring-0 text-sm font-bold text-gray-700 bg-transparent placeholder:text-gray-300" 
               placeholder="Mobile Number" 
               type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               required
               value={formData.mobile}
               onChange={(e) => setFormData({...formData, mobile: e.target.value})}

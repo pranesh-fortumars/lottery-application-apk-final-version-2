@@ -201,6 +201,8 @@ const PersonalInfoPage = () => {
                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#ff0033] transition-colors"><CreditCard size={18} /></div>
                    <input 
                      type="text" 
+                     inputMode="numeric"
+                     pattern="[0-9]*"
                      name="accountNumber"
                      value={formData.accountNumber}
                      onChange={handleChange}
@@ -217,6 +219,8 @@ const PersonalInfoPage = () => {
                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-[#ff0033] transition-colors"><CreditCard size={18} /></div>
                    <input 
                      type="password" 
+                     inputMode="numeric"
+                     pattern="[0-9]*"
                      name="confirmAccountNumber"
                      value={formData.confirmAccountNumber}
                      onChange={handleChange}

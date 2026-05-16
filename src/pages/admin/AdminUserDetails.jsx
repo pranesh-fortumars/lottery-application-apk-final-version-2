@@ -438,10 +438,10 @@ const AdminUserDetails = () => {
               <form onSubmit={handleUpdateProfile} className="space-y-5">
                 {[
                   { label: 'Full Name', key: 'name', icon: User, type: 'text' },
-                  { label: 'Mobile Number', key: 'mobile', icon: Phone, type: 'tel' },
+                  { label: 'Mobile Number', key: 'mobile', icon: Phone, type: 'tel', inputMode: 'numeric', pattern: '[0-9]*' },
                   { label: 'Email Address', key: 'email', icon: Mail, type: 'email' },
                   { label: 'Account Holder Name', key: 'accountHolderName', icon: User, type: 'text' },
-                  { label: 'Account Number', key: 'accountNumber', icon: Info, type: 'text' },
+                  { label: 'Account Number', key: 'accountNumber', icon: Info, type: 'text', inputMode: 'numeric', pattern: '[0-9]*' },
                   { label: 'IFSC Code', key: 'ifscCode', icon: Key, type: 'text' },
                   { label: 'UPI ID', key: 'upiId', icon: Mail, type: 'text' },
                 ].map((field) => (
@@ -452,6 +452,8 @@ const AdminUserDetails = () => {
                       <input 
                         required
                         type={field.type} 
+                        inputMode={field.inputMode}
+                        pattern={field.pattern}
                         value={editData[field.key]}
                         onChange={e => setEditData({...editData, [field.key]: e.target.value})}
                         className="w-full h-15 bg-gray-50/50 border border-gray-100 rounded-2xl pl-16 pr-6 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#f42464]/20 transition-all text-xs"

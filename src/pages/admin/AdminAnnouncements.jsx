@@ -319,7 +319,7 @@ const AdminAnnouncements = () => {
                             {['A', 'B', 'C'].map(p => (
                             <div key={p} className="flex items-center justify-between gap-2">
                                 <span className="text-[10px] font-black text-gray-400 italic">{p} Board</span>
-                                <input type="number" value={localScheme['1D'][p]} onChange={(e) => setLocalScheme({...localScheme, '1D': {...localScheme['1D'], [p]: e.target.value}})} className="w-20 bg-white border border-gray-200 rounded-lg py-1 px-2 text-xs font-black" />
+                                <input type="text" inputMode="decimal" pattern="[0-9]*" value={localScheme['1D'][p]} onChange={(e) => setLocalScheme({...localScheme, '1D': {...localScheme['1D'], [p]: e.target.value}})} className="w-20 bg-white border border-gray-200 rounded-lg py-1 px-2 text-xs font-black" />
                             </div>
                             ))}
                         </div>
@@ -328,7 +328,7 @@ const AdminAnnouncements = () => {
                             {['AB', 'BC', 'AC'].map(p => (
                             <div key={p} className="flex items-center justify-between gap-2">
                                 <span className="text-[10px] font-black text-gray-400 italic">{p} Combo</span>
-                                <input type="number" value={localScheme['2D'][p]} onChange={(e) => setLocalScheme({...localScheme, '2D': {...localScheme['2D'], [p]: e.target.value}})} className="w-20 bg-white border border-gray-200 rounded-lg py-1 px-2 text-xs font-black" />
+                                <input type="text" inputMode="decimal" pattern="[0-9]*" value={localScheme['2D'][p]} onChange={(e) => setLocalScheme({...localScheme, '2D': {...localScheme['2D'], [p]: e.target.value}})} className="w-20 bg-white border border-gray-200 rounded-lg py-1 px-2 text-xs font-black" />
                             </div>
                             ))}
                         </div>
@@ -345,7 +345,9 @@ const AdminAnnouncements = () => {
                                             <div key={pos} className="flex flex-col items-center">
                                                 <label className="text-[8px] font-black text-gray-400 uppercase mb-1">{pos}</label>
                                                 <input 
-                                                    type="number" 
+                                                    type="text" 
+                                                    inputMode="decimal"
+                                                    pattern="[0-9]*"
                                                     value={localScheme['3D'][tier][pos]} 
                                                     onChange={(e) => setLocalScheme({
                                                         ...localScheme, 
@@ -375,7 +377,9 @@ const AdminAnnouncements = () => {
                                             <div key={pos} className="flex flex-col items-center">
                                                 <label className="text-[8px] font-black text-gray-400 uppercase mb-1">{pos}</label>
                                                 <input 
-                                                    type="number" 
+                                                    type="text" 
+                                                    inputMode="decimal"
+                                                    pattern="[0-9]*"
                                                     value={localScheme['4D'][tier][pos]} 
                                                     onChange={(e) => setLocalScheme({
                                                         ...localScheme, 
@@ -490,7 +494,7 @@ const AdminAnnouncements = () => {
                         {['X', 'A', 'B', 'C'].map(col => (
                         <div key={col} className="space-y-2 text-center">
                             <label className="text-[9px] font-black uppercase text-gray-400">{col === 'X' ? 'X / D' : col}</label>
-                            <input type="number" value={resultDigits[col]} onChange={(e) => handleDigitChange(col, e.target.value)} className="w-full h-20 bg-gray-50 border-2 border-gray-100 rounded-2xl text-center text-4xl font-black focus:border-[#ff0000] outline-none" />
+                            <input type="text" inputMode="numeric" pattern="[0-9]*" value={resultDigits[col]} onChange={(e) => handleDigitChange(col, e.target.value)} className="w-full h-20 bg-gray-50 border-2 border-gray-100 rounded-2xl text-center text-4xl font-black focus:border-[#ff0000] outline-none" />
                         </div>
                         ))}
                     </div>

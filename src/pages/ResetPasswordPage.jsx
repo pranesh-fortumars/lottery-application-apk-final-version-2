@@ -212,6 +212,8 @@ const ResetPasswordPage = () => {
                             className="w-full h-16 bg-gray-50 border border-gray-100 rounded-[1.5rem] pl-20 pr-6 outline-none font-bold text-gray-800 focus:bg-white focus:border-[#ff0033]/20 transition-all text-sm shadow-sm"
                             placeholder="10 Digit Number"
                             type="tel"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             maxLength={10}
                             value={identifier}
                             onChange={(e) => setIdentifier(e.target.value.replace(/\D/g, ''))}
@@ -254,6 +256,8 @@ const ResetPasswordPage = () => {
                         className="w-full h-16 bg-gray-50 border border-gray-100 rounded-[1.5rem] pl-16 pr-6 outline-none font-black text-gray-800 focus:bg-white focus:border-[#ff0033]/20 transition-all text-xl tracking-[0.5em] text-center shadow-sm"
                         placeholder="······"
                         type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         maxLength={6}
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}

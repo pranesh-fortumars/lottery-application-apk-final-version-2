@@ -102,7 +102,9 @@ const AdminControl = () => {
                     <div className="flex items-center bg-gray-50/50 border border-gray-100 rounded-2xl px-6 h-16 group-focus-within/param:border-[#f42464]/20 group-focus-within/param:bg-white transition-all shadow-sm">
                        <param.icon className="text-[#f42464] opacity-20 mr-4" size={24} />
                        <input 
-                         type="number" 
+                         type="text" 
+                         inputMode="numeric"
+                         pattern="[0-9]*"
                          defaultValue={param.value} 
                          className="bg-transparent border-none outline-none font-black text-gray-800 text-lg w-full placeholder:text-gray-200" 
                        />

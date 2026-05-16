@@ -91,7 +91,9 @@ const PaymentModal = ({ isOpen, onClose, amount, onConfirm }) => {
                   <div>
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Amount Actually Paid (₹)</label>
                     <input 
-                      type="number" 
+                      type="text" 
+                      inputMode="decimal"
+                      pattern="[0-9]*"
                       value={paidAmount}
                       onChange={(e) => setPaidAmount(e.target.value)}
                       placeholder={`Enter exact amount paid`}
@@ -102,6 +104,8 @@ const PaymentModal = ({ isOpen, onClose, amount, onConfirm }) => {
                     <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Transaction ID / UTR (12 Digits)</label>
                     <input 
                       type="text" 
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       value={transactionId}
                       onChange={(e) => setTransactionId(e.target.value)}
                       placeholder="Enter 12-digit UTR number"

@@ -104,7 +104,9 @@ const TopUpPage = () => {
            <div className="relative mt-8 group">
               <div className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-[#ff0033] transition-colors font-black text-xl italic">₹</div>
               <input 
-                type="number" 
+                type="text" 
+                inputMode="decimal"
+                pattern="[0-9]*"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 className="w-full h-16 bg-gray-50 border-[1.5px] border-gray-100 rounded-[1.5rem] pl-14 pr-6 font-black text-gray-900 text-lg outline-none focus:bg-white focus:border-[#ff0033]/30 transition-all shadow-inner placeholder:text-gray-200" 
