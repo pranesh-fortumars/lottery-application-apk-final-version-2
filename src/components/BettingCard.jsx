@@ -34,8 +34,9 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
     setRows(newRows);
     
     if (val && digitIdx < newRows[rowIdx].numbers.length - 1) {
-      const nextId = `input-${title}-${rowIdx}-${digitIdx + 1}-${currentPrice.replace('.','')}`;
-      const next = document.getElementById(nextId);
+      const nextIdWithPrice = `input-${title}-${rowIdx}-${digitIdx + 1}-${currentPrice.replace('.','')}`;
+      const nextIdWithoutPrice = `input-${title}-${rowIdx}-${digitIdx + 1}`;
+      const next = document.getElementById(nextIdWithPrice) || document.getElementById(nextIdWithoutPrice);
       if (next) next.focus();
     }
   };
@@ -190,6 +191,8 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
                   key={digIdx}
                   id={`input-${title}-${rowIdx}-${digIdx}-${currentPrice.replace('.','')}`}
                   type="text" 
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={num}
                   onChange={(e) => updateNumber(rowIdx, digIdx, e.target.value)}
                   className={`w-10 h-10 border-2 rounded-xl text-center text-xl font-black bg-white outline-none transition-all focus:ring-4 focus:ring-[#ff004d]/10 font-premium ${getLabel(row, digIdx) === 'X' ? 'border-black focus:border-[#ff004d]' : 'border-gray-400 focus:border-[#ff004d]'}`} 
@@ -286,6 +289,8 @@ const BettingCard = ({ title, winText: initialWinText, price: initialPrice, digi
                     key={digIdx}
                     id={`input-${title}-${rowIdx}-${digIdx}`}
                     type="text" 
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={num}
                     onChange={(e) => updateNumber(rowIdx, digIdx, e.target.value)}
                     className={`w-8 h-8 border-[1.5px] rounded-lg text-center text-lg font-black bg-white outline-none ${getLabel(row, digIdx) === 'X' ? 'border-black focus:border-[#ff004d]' : 'border-gray-950 focus:border-[#ff004d]'}`} 
